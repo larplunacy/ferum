@@ -2,13 +2,13 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ferum. — Memecoin Simulator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik+Mono+One&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#08090b;--panel:#0e1114;--panel2:#14181d;--hover:#181d23;
   --border:#1b2127;--text:#e6ebf0;--muted:#6a7684;
@@ -17,14 +17,15 @@
   --graffiti:'Bungee','Rubik Mono One','Impact',sans-serif;
 }
 html,body{height:100%}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;font-size:13px;overflow:hidden;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;font-size:13px;overflow:hidden;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-thumb{background:#2b353f;border-radius:4px}
 ::-webkit-scrollbar-thumb:hover{background:#3a4551}
 ::-webkit-scrollbar-track{background:transparent}
-.app{display:grid;grid-template-rows:52px 1fr;height:100vh}
 
-/* ===== TOPBAR ===== */
+.app{display:grid;grid-template-rows:52px 1fr;height:100vh;height:100dvh}
+
+/* TOPBAR */
 .topbar{display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:1px solid var(--border);background:var(--panel);flex-shrink:0;position:relative;z-index:20}
 .brand{display:flex;align-items:baseline;gap:2px;font-weight:800;font-size:15px;flex-shrink:0}
 .brand .slashes{font-family:var(--mono);font-weight:900;color:var(--green);font-size:22px;letter-spacing:-3px;line-height:1;transform:translateY(1px);margin-right:9px}
@@ -42,7 +43,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .search-dropdown.show{display:block}
 .search-section-label{font-size:9.5px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;font-weight:800;padding:8px 10px 4px}
 .search-result{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .12s}
-.search-result:hover{background:var(--hover)}
+.search-result:hover,.search-result:active{background:var(--hover)}
 .search-result .sr-avatar{width:28px;height:28px;border-radius:50%;background:#1f242b;display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;flex-shrink:0}
 .search-result .sr-avatar img{width:100%;height:100%;object-fit:cover}
 .search-result .sr-info{flex:1;min-width:0}
@@ -73,13 +74,16 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .profile-btn .avatar img{width:100%;height:100%;object-fit:cover}
 .profile-btn .nickname{font-size:12.5px;font-weight:700;color:var(--text);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
+/* ===== BOTTOM NAV (только мобильные) ===== */
+.mobile-nav{display:none}
+
 /* PAGES */
-.pages{position:relative;overflow:hidden}
+.pages{position:relative;overflow:hidden;min-height:0}
 .page{position:absolute;inset:0;display:none;overflow:hidden}
 .page.active{display:block}
 
 /* HOME */
-.home{height:100%;overflow-y:auto;padding:22px 26px}
+.home{height:100%;overflow-y:auto;padding:22px 26px;-webkit-overflow-scrolling:touch}
 .home-head{margin-bottom:18px}
 .home-head h1{font-size:22px;font-weight:800;margin-bottom:4px}
 .home-head p{font-size:12.5px;color:var(--muted)}
@@ -91,7 +95,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .hc-head .count{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--muted);font-weight:600}
 .hc-list{display:flex;flex-direction:column;gap:6px}
 .hc-coin{display:grid;grid-template-columns:22px 1fr auto auto;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .12s}
-.hc-coin:hover{background:var(--hover)}
+.hc-coin:hover,.hc-coin:active{background:var(--hover)}
 .hc-logo{width:22px;height:22px;border-radius:50%;background:#1f242b;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;overflow:hidden}
 .hc-logo img{width:100%;height:100%;object-fit:cover}
 .hc-info{min-width:0}
@@ -102,15 +106,16 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .up{color:var(--green)}.down{color:var(--red)}
 
 /* TRADE */
-.trade-layout{display:grid;grid-template-columns:280px minmax(0,1fr) 322px;height:100%;overflow:hidden}
+.trade-layout{display:grid;grid-template-columns:280px minmax(0,1fr) 322px;height:100%;overflow:hidden;position:relative}
+.mobile-trade-tabs{display:none}
 .tokenlist{border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:0;background:var(--panel)}
 .panel-head{padding:10px 12px;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-weight:700;flex-shrink:0}
 .panel-head .left{display:flex;align-items:center;gap:8px}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 1.6s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.token-rows{overflow-y:auto;flex:1}
+.token-rows{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
 .trow{display:grid;grid-template-columns:minmax(0,1fr) 44px 78px;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;border-bottom:1px solid #11161a;transition:background .12s;position:relative}
-.trow:hover{background:var(--hover)}
+.trow:hover,.trow:active{background:var(--hover)}
 .trow.active{background:#151b21}
 .trow.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--green)}
 .trow.owned .tsym::after{content:'★';color:var(--gold);margin-left:5px;font-size:9px}
@@ -128,7 +133,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .ch-left{display:flex;align-items:center;gap:10px}
 .ch-logo{width:30px;height:30px;border-radius:50%;background:#1f242b;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden}
 .ch-logo img{width:100%;height:100%;object-fit:cover}
-.ch-sym{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
+.ch-sym{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .ch-sym span{color:var(--muted);font-weight:500;font-size:12px}
 .ch-owner{font-family:var(--mono);font-size:10px;color:var(--green);background:rgba(22,224,127,.08);border:1px solid rgba(22,224,127,.25);padding:2px 7px;border-radius:5px;font-weight:700}
 .ch-price{font-family:var(--mono);font-size:20px;font-weight:600}
@@ -141,13 +146,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .stat .v{font-size:12px;font-family:var(--mono)}
 .chart-wrap{flex:1;min-height:0;position:relative}
 #chart{position:absolute;inset:0;width:100%;height:100%;display:block}
-.rug-banner{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(255,77,94,.95);color:#fff;padding:8px 18px;border-radius:8px;font-weight:800;font-size:13px;animation:rugBlink 1s infinite;pointer-events:none;z-index:5}
+.rug-banner{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(255,77,94,.95);color:#fff;padding:8px 18px;border-radius:8px;font-weight:800;font-size:13px;animation:rugBlink 1s infinite;pointer-events:none;z-index:5;max-width:92%;text-align:center}
 @keyframes rugBlink{0%,100%{opacity:1}50%{opacity:.75}}
-.rugged-banner{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(20,20,20,.9);color:#ff4d5e;padding:8px 18px;border-radius:8px;font-weight:800;font-size:13px;border:1px solid rgba(255,77,94,.4);z-index:5;pointer-events:none}
+.rugged-banner{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(20,20,20,.9);color:#ff4d5e;padding:8px 18px;border-radius:8px;font-weight:800;font-size:13px;border:1px solid rgba(255,77,94,.4);z-index:5;pointer-events:none;max-width:92%;text-align:center}
 .positions{border-top:1px solid var(--border);background:var(--panel);max-height:200px;display:flex;flex-direction:column;flex-shrink:0}
 .pos-head{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);font-weight:700;border-bottom:1px solid var(--border);flex-shrink:0}
 .pos-head b{font-family:var(--mono);color:var(--text);font-size:11.5px}
-.pos-list{overflow-y:auto}
+.pos-list{overflow-y:auto;-webkit-overflow-scrolling:touch}
 .pos-row{display:grid;grid-template-columns:1.3fr 1.1fr 1fr 1fr 62px;gap:8px;padding:8px 16px;align-items:center;border-bottom:1px solid #11161a;font-size:12px}
 .pos-row:hover{background:#101519}
 .pc{display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden}
@@ -163,24 +168,24 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .tp-tab{padding:9px;border-radius:8px;background:transparent;border:1px solid transparent;color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .13s}
 .tp-tab:hover{background:var(--hover);color:var(--text)}
 .tp-tab.active{background:rgba(22,224,127,.1);color:var(--green);border-color:rgba(22,224,127,.28)}
-.tp-body{padding:14px 16px;display:flex;flex-direction:column;gap:13px;overflow-y:auto;flex:1}
+.tp-body{padding:14px 16px;display:flex;flex-direction:column;gap:13px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
 .field label{display:block;font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;font-weight:700}
 .amount{display:flex;align-items:center;background:var(--panel2);border:1px solid var(--border);border-radius:9px;padding:0 12px}
 .amount:focus-within{border-color:#2b3945}
 .amount input{flex:1;background:transparent;border:0;outline:0;color:var(--text);font-family:var(--mono);font-size:16px;padding:12px 0;min-width:0}
 .amount .unit{color:var(--muted);font-size:11.5px;font-weight:700;font-family:var(--mono);padding-left:8px}
 .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:7px}
-.quick button{background:var(--panel2);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:6px 0;font-size:11px;cursor:pointer;font-family:inherit;font-weight:700}
+.quick button{background:var(--panel2);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:8px 0;font-size:11px;cursor:pointer;font-family:inherit;font-weight:700}
 .quick button:hover{background:var(--hover);color:var(--text)}
 .est{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:10px 12px;background:var(--panel2);border-radius:8px}
 .est span{color:var(--muted)}
 .est b{font-family:var(--mono);font-weight:600}
-.exec{width:100%;padding:13px;border-radius:9px;border:0;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit}
+.exec{width:100%;padding:14px;border-radius:9px;border:0;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit}
 .exec.buy{background:var(--green);color:#04170d}
 .exec.sell{background:var(--red);color:#1a0508}
 .exec:hover{filter:brightness(1.1)}
 .exec:disabled{opacity:.4;cursor:not-allowed}
-.rug-btn{width:100%;padding:11px;border-radius:9px;border:1px solid rgba(255,77,94,.4);background:rgba(255,77,94,.08);color:var(--red);font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.06em;text-transform:uppercase}
+.rug-btn{width:100%;padding:12px;border-radius:9px;border:1px solid rgba(255,77,94,.4);background:rgba(255,77,94,.08);color:var(--red);font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.06em;text-transform:uppercase}
 .rug-btn:hover{background:rgba(255,77,94,.2)}
 .rug-btn:disabled{opacity:.5;cursor:not-allowed}
 .wallet{display:flex;flex-direction:column;gap:8px;padding-top:13px;border-top:1px solid var(--border);font-size:11.5px}
@@ -193,7 +198,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .feed-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase}
 .feed-head .fname{color:var(--text);text-transform:none;font-size:12.5px}
 .feed-head .fuser{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--green);background:rgba(22,224,127,.08);border:1px solid rgba(22,224,127,.25);padding:2px 7px;border-radius:5px;font-weight:700}
-.feed-list{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.feed-list{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch}
 .feed-post{background:var(--panel2);border-radius:8px;padding:9px 11px;border-left:3px solid #2b3945;font-size:11.5px}
 .feed-post.bot{border-left-color:var(--purple)}
 .feed-post.user-bull{border-left-color:var(--green)}
@@ -210,17 +215,17 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .feed-input{padding:10px 12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px;flex-shrink:0}
 .post-input{width:100%;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-size:12px;font-family:inherit;outline:none;resize:none;min-height:60px;max-height:120px}
 .post-input:focus{border-color:#2b3945}
-.post-submit{background:var(--green);color:#04170d;border:0;border-radius:7px;padding:9px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit}
+.post-submit{background:var(--green);color:#04170d;border:0;border-radius:7px;padding:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit}
 
 /* CREATE */
-.create-page{height:100%;overflow-y:auto;padding:30px 26px}
+.create-page{height:100%;overflow-y:auto;padding:30px 26px;-webkit-overflow-scrolling:touch}
 .create-wrap{max-width:640px;margin:0 auto}
 .create-wrap h1{font-size:22px;font-weight:800;margin-bottom:6px}
 .create-wrap > p{font-size:12.5px;color:var(--muted);margin-bottom:24px;line-height:1.55}
 .create-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:22px}
 .frow{display:flex;flex-direction:column;gap:6px;margin-bottom:15px}
 .frow label{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:700}
-.frow input[type=text],.frow input[type=number]{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:11px 13px;color:var(--text);font-size:13px;font-family:inherit;outline:none}
+.frow input[type=text],.frow input[type=number]{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:11px 13px;color:var(--text);font-size:13px;font-family:inherit;outline:none;-webkit-appearance:none;appearance:none}
 .frow input:focus{border-color:#2b3945}
 .frow input::placeholder{color:#4a5560}
 .frow .hint{font-size:10.5px;color:#4d5863;line-height:1.5}
@@ -236,7 +241,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .logo-preview img{width:100%;height:100%;object-fit:cover}
 .logo-controls{display:flex;flex-direction:column;gap:8px;flex:1}
 .logo-controls input[type=file]{display:none}
-.file-btn{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:8px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center}
+.file-btn{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:9px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center}
 .file-btn:hover{background:var(--hover)}
 .emoji-input{background:var(--panel2);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-size:14px;font-family:inherit;outline:none;text-align:center;width:100%}
 .create-summary{background:var(--panel2);border-radius:10px;padding:14px 16px;margin-top:10px;font-size:12.5px;display:flex;flex-direction:column;gap:8px}
@@ -247,7 +252,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .create-summary .r.total b{color:var(--green);font-size:14px}
 .create-summary .r.recv b{color:var(--gold)}
 .create-actions{display:flex;gap:10px;margin-top:18px}
-.create-actions button{flex:1;padding:13px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;border:0}
+.create-actions button{flex:1;padding:14px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;border:0}
 .create-actions .confirm{background:var(--green);color:#04170d}
 .create-actions .confirm:disabled{opacity:.45;cursor:not-allowed}
 
@@ -257,15 +262,15 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .fs-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
 .fs-head h1{font-size:18px;font-weight:800}
 .fs-head .sub{font-size:11px;color:var(--muted);margin-left:auto;font-family:var(--mono)}
-.fs-feed{flex:1;overflow-y:auto;padding:14px 20px;display:flex;flex-direction:column;gap:12px}
+.fs-feed{flex:1;overflow-y:auto;padding:14px 20px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
 .fs-post{background:var(--panel2);border-radius:10px;padding:13px 15px;border:1px solid #1a2027}
 .fs-post.bull{border-left:3px solid var(--green)}
 .fs-post.bear{border-left:3px solid var(--red)}
 .fs-post.bot{border-left:3px solid var(--purple)}
 .fs-post.info{border-left:3px solid var(--gold)}
 .fs-post.rugged{border-left:3px solid #000;background:#150a0d}
-.fs-top{display:flex;align-items:center;gap:9px;margin-bottom:7px}
-.fs-avatar{width:26px;height:26px;border-radius:50%;background:#2b3038;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;overflow:hidden}
+.fs-top{display:flex;align-items:center;gap:9px;margin-bottom:7px;flex-wrap:wrap}
+.fs-avatar{width:26px;height:26px;border-radius:50%;background:#2b3038;display:flex;align-items:center;justify-content:center;font-size:13px;overflow:hidden;flex-shrink:0}
 .fs-author{font-weight:700;font-size:12.5px}
 .fs-author.owner{color:var(--green)}
 .fs-coin-tag{font-family:var(--mono);font-size:10px;background:rgba(22,224,127,.1);color:var(--green);padding:2px 7px;border-radius:5px;font-weight:800;cursor:pointer;margin-left:6px;border:1px solid rgba(22,224,127,.2)}
@@ -273,7 +278,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .fs-time{font-size:10.5px;color:var(--muted);margin-left:auto;font-family:var(--mono)}
 .fs-text{color:#c9d0d7;line-height:1.5;font-size:13px;word-break:break-word}
 .fs-impact{font-family:var(--mono);font-size:11px;font-weight:700;margin-left:8px}
-.fs-side{display:flex;flex-direction:column;gap:14px;min-height:0;overflow-y:auto}
+.fs-side{display:flex;flex-direction:column;gap:14px;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .fs-side-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
 .fs-side-card h3{font-size:12.5px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:7px}
 .fs-side-list{display:flex;flex-direction:column;gap:5px}
@@ -285,7 +290,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .fs-side-chg{font-family:var(--mono);font-size:11px;font-weight:700}
 
 /* EARNINGS */
-.earnings-page{height:100%;overflow-y:auto;padding:24px 26px}
+.earnings-page{height:100%;overflow-y:auto;padding:24px 26px;-webkit-overflow-scrolling:touch}
 .earnings-head{margin-bottom:20px;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}
 .earnings-head h1{font-size:22px;font-weight:800;margin-bottom:4px}
 .earnings-head p{font-size:12.5px;color:var(--muted)}
@@ -293,12 +298,12 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .earn-stat{display:flex;flex-direction:column;gap:3px;align-items:flex-end}
 .earn-stat .k{font-size:9.5px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;font-weight:700}
 .earn-stat .v{font-family:var(--mono);font-size:16px;font-weight:700}
-.earn-filters{display:flex;gap:6px;margin-bottom:16px}
-.filter-btn{padding:6px 14px;border-radius:7px;background:var(--panel2);border:1px solid var(--border);color:var(--muted);font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.earn-filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.filter-btn{padding:8px 14px;border-radius:7px;background:var(--panel2);border:1px solid var(--border);color:var(--muted);font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit}
 .filter-btn:hover{background:var(--hover);color:var(--text)}
 .filter-btn.active{background:rgba(22,224,127,.1);color:var(--green);border-color:rgba(22,224,127,.3)}
 .trades-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
-.trade-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;position:relative}
+.trade-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
 .trade-card:hover{border-color:#252d36}
 .trade-card.profit{border-left:3px solid var(--green)}
 .trade-card.loss{border-left:3px solid var(--red)}
@@ -306,7 +311,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .tc-logo{width:34px;height:34px;border-radius:50%;background:#1f242b;display:flex;align-items:center;justify-content:center;font-size:16px;overflow:hidden;flex-shrink:0}
 .tc-logo img{width:100%;height:100%;object-fit:cover}
 .tc-info{flex:1;min-width:0}
-.tc-sym{font-weight:800;font-size:13.5px;display:flex;align-items:center;gap:7px}
+.tc-sym{font-weight:800;font-size:13.5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .tc-merged{font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(139,92,246,.18);color:#b794ff;font-weight:800;letter-spacing:.05em}
 .tc-name{font-size:10.5px;color:var(--muted);margin-top:1px}
 .tc-time{font-size:10px;color:var(--muted);font-family:var(--mono)}
@@ -317,18 +322,17 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .tc-stats .row{display:flex;justify-content:space-between}
 .tc-stats .row span{color:var(--muted)}
 .tc-actions{display:flex;gap:8px;margin-top:4px}
-.tc-btn{flex:1;padding:9px;border-radius:8px;font-size:11.5px;font-weight:800;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:var(--panel2);color:var(--text)}
+.tc-btn{flex:1;padding:11px;border-radius:8px;font-size:11.5px;font-weight:800;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:var(--panel2);color:var(--text)}
 .tc-btn:hover{background:var(--hover)}
 .tc-btn.primary{background:linear-gradient(135deg,#16e07f,#0a8f52);color:#04170d;border-color:transparent}
 .earn-empty{padding:60px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6}
 
 /* REWARDS */
-.rewards-page{height:100%;overflow-y:auto;padding:24px 26px}
+.rewards-page{height:100%;overflow-y:auto;padding:24px 26px;-webkit-overflow-scrolling:touch}
 .rewards-head{margin-bottom:20px}
 .rewards-head h1{font-size:22px;font-weight:800;margin-bottom:4px}
 .rewards-head p{font-size:12.5px;color:var(--muted)}
 .rewards-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;max-width:1500px}
-@media (max-width:1180px){.rewards-grid{grid-template-columns:1fr;max-width:640px}}
 .rw-card{position:relative;background:radial-gradient(120% 80% at 0% 0%, rgba(255,255,255,.03) 0%, transparent 55%),linear-gradient(160deg, #0f1217 0%, #0a0d10 100%);border:1px solid var(--border);border-radius:22px;padding:24px 22px 22px;aspect-ratio:1 / 1;min-height:440px;display:flex;flex-direction:column;overflow:hidden}
 .rw-card::before{content:'';position:absolute;inset:-1px;border-radius:22px;padding:1px;background:linear-gradient(135deg, rgba(22,224,127,.35), transparent 30%, transparent 70%, rgba(22,224,127,.15));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 .rw-card.purple::before{background:linear-gradient(135deg, rgba(139,92,246,.45), transparent 30%, transparent 70%, rgba(139,92,246,.2))}
@@ -371,7 +375,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .rw-coin-line .nm{font-weight:700;font-size:11.5px}
 .rw-coin-line .sub{font-size:9.5px;color:var(--muted)}
 .rw-coin-line .chg{font-family:var(--mono);font-weight:700;font-size:11px}
-.vote-btn{background:rgba(22,224,127,.12);color:var(--green);border:1px solid rgba(22,224,127,.3);border-radius:6px;padding:4px 9px;font-size:10px;font-weight:800;cursor:pointer;font-family:inherit;text-transform:uppercase}
+.vote-btn{background:rgba(22,224,127,.12);color:var(--green);border:1px solid rgba(22,224,127,.3);border-radius:6px;padding:6px 10px;font-size:10px;font-weight:800;cursor:pointer;font-family:inherit;text-transform:uppercase}
 .vote-btn:hover{background:rgba(22,224,127,.22)}
 .vote-btn:disabled{opacity:.4;cursor:not-allowed}
 .vote-btn.voted{background:rgba(22,224,127,.3);color:#04170d;border-color:var(--green)}
@@ -398,32 +402,32 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 @keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 
 /* MODALS */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
 .modal-overlay.show{display:flex}
 .modal{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px;width:460px;max-width:100%;box-shadow:0 22px 60px rgba(0,0,0,.7)}
 .modal h2{font-size:16px;font-weight:800;margin-bottom:4px}
 .modal .sub{font-size:11.5px;color:var(--muted);margin-bottom:16px;line-height:1.5}
 .modal .warn{background:rgba(255,77,94,.08);border:1px solid rgba(255,77,94,.3);border-radius:8px;padding:11px 13px;font-size:12px;color:#ff8c98;line-height:1.55;margin-bottom:14px}
 .modal .actions{display:flex;gap:9px;margin-top:16px}
-.modal .actions button{flex:1;padding:11px;border-radius:8px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;border:0}
+.modal .actions button{flex:1;padding:12px;border-radius:8px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;border:0}
 .modal .actions .cancel{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
 .modal .actions .confirm{background:var(--red);color:#fff}
 
 /* PROFILE */
-.profile-modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:540px;max-width:100%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 22px 60px rgba(0,0,0,.8)}
+.profile-modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:540px;max-width:100%;max-height:92vh;max-height:92dvh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 22px 60px rgba(0,0,0,.8)}
 .profile-banner{position:relative;height:140px;flex-shrink:0;background-size:cover;background-position:center}
-.banner-edit-btn{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.15);padding:6px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;backdrop-filter:blur(4px)}
+.banner-edit-btn{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.15);padding:8px 12px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;backdrop-filter:blur(4px)}
 .banner-edit-btn:hover{background:rgba(0,0,0,.75)}
-.banner-presets{position:absolute;bottom:8px;left:8px;display:flex;gap:6px;background:rgba(0,0,0,.55);padding:6px;border-radius:9px;backdrop-filter:blur(4px)}
+.banner-presets{position:absolute;bottom:8px;left:8px;display:flex;gap:6px;background:rgba(0,0,0,.55);padding:6px;border-radius:9px;backdrop-filter:blur(4px);flex-wrap:wrap;max-width:calc(100% - 16px)}
 .banner-preset{width:22px;height:22px;border-radius:5px;border:2px solid transparent;cursor:pointer;transition:transform .12s}
 .banner-preset:hover{transform:scale(1.12)}
 .banner-preset.active{border-color:#fff}
-.profile-body{padding:0 22px 22px;overflow-y:auto;flex:1;min-height:0;position:relative}
+.profile-body{padding:0 22px 22px;overflow-y:auto;flex:1;min-height:0;position:relative;-webkit-overflow-scrolling:touch}
 .profile-avatar-wrap{position:relative;margin-top:-40px;margin-bottom:12px;display:inline-block;z-index:3}
 .profile-avatar{width:80px;height:80px;border-radius:50%;background:#1f242b;display:flex;align-items:center;justify-content:center;font-size:38px;border:4px solid var(--panel);overflow:hidden;position:relative}
 .profile-avatar img{width:100%;height:100%;object-fit:cover}
 .avatar-btn-group{position:absolute;right:-6px;bottom:-6px;display:flex;gap:4px}
-.avatar-btn{width:26px;height:26px;border-radius:50%;background:var(--green);color:#04170d;border:2px solid var(--panel);cursor:pointer;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
+.avatar-btn{width:30px;height:30px;border-radius:50%;background:var(--green);color:#04170d;border:2px solid var(--panel);cursor:pointer;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
 .avatar-btn:hover{filter:brightness(1.1)}
 .avatar-btn.alt{background:var(--purple);color:#fff}
 .profile-fields{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
@@ -438,43 +442,43 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .pe-stat{display:flex;flex-direction:column;gap:3px}
 .pe-stat span{font-size:9.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:700}
 .pe-stat b{font-family:var(--mono);font-size:14px;font-weight:700}
-.profile-toggle{display:flex;justify-content:space-between;align-items:center;background:var(--panel2);border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.profile-toggle{display:flex;justify-content:space-between;align-items:center;background:var(--panel2);border-radius:10px;padding:12px 14px;margin-bottom:12px;gap:10px}
 .pt-title{font-size:12.5px;font-weight:700}
 .pt-sub{font-size:10.5px;color:var(--muted);margin-top:2px}
-.switch{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0}
+.switch{position:relative;display:inline-block;width:44px;height:26px;flex-shrink:0}
 .switch input{opacity:0;width:0;height:0}
-.switch .slider{position:absolute;cursor:pointer;inset:0;background:#2b353f;border-radius:24px;transition:.22s}
-.switch .slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.22s}
+.switch .slider{position:absolute;cursor:pointer;inset:0;background:#2b353f;border-radius:26px;transition:.22s}
+.switch .slider::before{content:'';position:absolute;height:20px;width:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.22s}
 .switch input:checked + .slider{background:var(--green)}
 .switch input:checked + .slider::before{transform:translateX(18px)}
-.profile-wallet-row{display:flex;align-items:center;gap:10px;background:var(--panel2);border-radius:10px;padding:10px 12px;margin-bottom:12px}
-.pwr-addr{font-family:var(--mono);font-size:12.5px;color:var(--green);letter-spacing:.06em;flex:1;word-break:break-all}
-.pwr-btn{padding:6px 11px;border-radius:7px;background:rgba(22,224,127,.12);color:var(--green);border:1px solid rgba(22,224,127,.3);font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+.profile-wallet-row{display:flex;align-items:center;gap:10px;background:var(--panel2);border-radius:10px;padding:10px 12px;margin-bottom:12px;flex-wrap:wrap}
+.pwr-addr{font-family:var(--mono);font-size:12.5px;color:var(--green);letter-spacing:.06em;flex:1;word-break:break-all;min-width:0}
+.pwr-btn{padding:8px 12px;border-radius:7px;background:rgba(22,224,127,.12);color:var(--green);border:1px solid rgba(22,224,127,.3);font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
 .pwr-btn:hover{background:rgba(22,224,127,.22)}
-.profile-actions{display:flex;gap:9px}
-.profile-actions button{flex:1;padding:11px;border-radius:9px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;border:0}
+.profile-actions{display:flex;gap:9px;flex-wrap:wrap}
+.profile-actions button{padding:12px;border-radius:9px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;border:0;flex:1;min-width:100px}
 .profile-actions .cancel{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
 .profile-actions .confirm{background:var(--green);color:#04170d}
-.profile-actions .logout{background:rgba(255,77,94,.1);color:var(--red);border:1px solid rgba(255,77,94,.3)}
+.profile-actions .logout{background:rgba(255,77,94,.1);color:var(--red);border:1px solid rgba(255,77,94,.3);flex:0.6}
 
-/* WALLET MODAL */
+/* WALLET */
 .wallet-modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px;width:440px;max-width:100%;box-shadow:0 22px 60px rgba(0,0,0,.8)}
 .wallet-modal h2{font-size:16px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:9px}
 .wallet-modal h2 .w-icon{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#16e07f,#0a8f52);display:flex;align-items:center;justify-content:center;font-size:13px;color:#04170d}
-.wallet-addr-row{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:12px}
-.wallet-addr{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--green);letter-spacing:.14em;flex:1;word-break:break-all}
-.copy-btn{padding:6px 11px;border-radius:7px;background:rgba(22,224,127,.12);color:var(--green);border:1px solid rgba(22,224,127,.3);font-size:10.5px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+.wallet-addr-row{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:12px;flex-wrap:wrap}
+.wallet-addr{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--green);letter-spacing:.14em;flex:1;word-break:break-all;min-width:0}
+.copy-btn{padding:8px 12px;border-radius:7px;background:rgba(22,224,127,.12);color:var(--green);border:1px solid rgba(22,224,127,.3);font-size:10.5px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
 .copy-btn:hover{background:rgba(22,224,127,.22)}
 .wallet-balance{display:flex;justify-content:space-between;align-items:center;background:var(--panel2);border-radius:10px;padding:14px 16px;margin-bottom:12px}
 .wallet-balance span{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
 .wallet-balance b{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--green)}
 .wallet-note{font-size:10.5px;color:#4d5863;line-height:1.55;padding:10px 12px;background:#0b0e11;border-radius:8px;border:1px solid #151a1f;margin-bottom:16px}
-.wallet-actions{display:flex;gap:9px}
-.wallet-actions button{flex:1;padding:11px;border-radius:9px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:var(--panel2);color:var(--text)}
+.wallet-actions{display:flex;gap:9px;flex-wrap:wrap}
+.wallet-actions button{flex:1;min-width:130px;padding:12px;border-radius:9px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:var(--panel2);color:var(--text)}
 .wallet-actions button:hover{background:var(--hover)}
 
 /* TRACKING */
-.tracking-modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px;width:540px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 22px 60px rgba(0,0,0,.8)}
+.tracking-modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px;width:540px;max-width:100%;max-height:88vh;max-height:88dvh;display:flex;flex-direction:column;box-shadow:0 22px 60px rgba(0,0,0,.8)}
 .tracking-modal h2{font-size:16px;font-weight:800;margin-bottom:4px}
 .tracking-modal .sub{font-size:11.5px;color:var(--muted);margin-bottom:16px;line-height:1.5}
 .track-form{display:grid;grid-template-columns:1.3fr 1fr auto;gap:8px;margin-bottom:14px;flex-shrink:0}
@@ -482,26 +486,26 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .track-form input:focus{border-color:#2b3945}
 .track-form input[name=addr]{font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em}
 .track-form button{padding:10px 14px;border-radius:8px;background:var(--green);color:#04170d;border:0;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
-.track-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;margin-bottom:14px;min-height:0;max-height:340px}
+.track-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;margin-bottom:14px;min-height:0;max-height:340px;-webkit-overflow-scrolling:touch}
 .track-item{display:grid;grid-template-columns:38px 1fr auto auto;gap:10px;align-items:center;background:var(--panel2);border-radius:10px;padding:10px 12px}
 .track-avatar{width:38px;height:38px;border-radius:50%;background:#1f242b;display:flex;align-items:center;justify-content:center;font-size:17px;border:2px solid var(--border);overflow:hidden;flex-shrink:0}
 .track-info{min-width:0}
 .track-name{font-weight:700;font-size:12.5px}
 .track-addr{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.04em;margin-top:2px}
 .track-badge{font-size:9.5px;padding:3px 7px;border-radius:5px;background:rgba(22,224,127,.12);color:var(--green);font-weight:800;letter-spacing:.05em}
-.track-remove{background:rgba(255,77,94,.1);color:var(--red);border:1px solid rgba(255,77,94,.25);border-radius:7px;padding:6px 9px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit}
+.track-remove{background:rgba(255,77,94,.1);color:var(--red);border:1px solid rgba(255,77,94,.25);border-radius:7px;padding:8px 11px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit}
 .track-remove:hover{background:rgba(255,77,94,.22)}
 .track-empty{padding:30px 14px;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.6}
 .tracking-modal .actions{display:flex;gap:9px;flex-shrink:0}
-.tracking-modal .actions button{flex:1;padding:11px;border-radius:9px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:var(--panel2);color:var(--text)}
+.tracking-modal .actions button{flex:1;padding:12px;border-radius:9px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:var(--panel2);color:var(--text)}
 
 /* VIDEO */
-.video-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:150;padding:16px}
+.video-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:150;padding:16px}
 .video-modal-overlay.show{display:flex}
-.video-modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:1100px;max-width:96vw;height:min(94vh, 780px);display:grid;grid-template-columns:minmax(0,1fr) 380px;grid-template-rows:minmax(0,1fr);overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.8)}
+.video-modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:1100px;max-width:96vw;height:min(94vh, 780px);height:min(94dvh, 780px);display:grid;grid-template-columns:minmax(0,1fr) 380px;grid-template-rows:minmax(0,1fr);overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.8)}
 .video-preview-wrap{background:#050607;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;min-width:0;min-height:0}
 #videoCanvas{width:100%;max-width:640px;height:auto;aspect-ratio:4 / 3;background:#000;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.55);display:block}
-.video-controls{padding:20px 20px 28px;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:14px;border-left:1px solid var(--border);min-height:0;background:var(--panel)}
+.video-controls{padding:20px 20px 28px;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:14px;border-left:1px solid var(--border);min-height:0;background:var(--panel);-webkit-overflow-scrolling:touch}
 .video-controls h2{font-size:16px;font-weight:800}
 .video-controls .sub{font-size:11px;color:var(--muted);line-height:1.5;margin-top:-8px}
 .vc-section{display:flex;flex-direction:column;gap:8px;flex-shrink:0}
@@ -512,7 +516,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .bg-preset:hover{border-color:#3a4551}
 .bg-preset.active{border-color:var(--green);box-shadow:0 0 0 2px rgba(22,224,127,.25)}
 .theme-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.theme-btn{padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-weight:800;font-size:11.5px;cursor:pointer;font-family:inherit}
+.theme-btn{padding:11px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-weight:800;font-size:11.5px;cursor:pointer;font-family:inherit}
 .theme-btn.active.profit{background:rgba(22,224,127,.15);border-color:var(--green);color:var(--green)}
 .theme-btn.active.loss{background:rgba(255,77,94,.15);border-color:var(--red);color:var(--red)}
 .file-input-hidden{display:none}
@@ -520,27 +524,21 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .audio-info.show{display:block}
 .range-row{display:flex;flex-direction:column;gap:5px}
 .range-row label{font-size:10px;color:var(--muted);display:flex;justify-content:space-between;font-family:var(--mono);font-weight:700}
-.range-row input[type=range]{width:100%;accent-color:var(--green);cursor:pointer}
+.range-row input[type=range]{width:100%;accent-color:var(--green);cursor:pointer;height:26px}
 .vc-actions{display:flex;flex-direction:column;gap:9px;margin-top:6px;flex-shrink:0;padding-top:8px;border-top:1px solid var(--border)}
-.vc-actions button{padding:12px;border-radius:9px;border:0;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit}
+.vc-actions button{padding:13px;border-radius:9px;border:0;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit}
 .preview-btn{background:var(--panel2);color:var(--text);border:1px solid var(--border)!important}
 .rec-btn{background:linear-gradient(135deg,#16e07f,#0a8f52);color:#04170d}
 .rec-btn:disabled{opacity:.55;cursor:not-allowed}
 .png-btn{background:var(--panel2);color:var(--text);border:1px solid var(--border)!important}
 .close-btn{background:transparent;color:var(--muted);border:1px solid var(--border)!important}
 
-/* =========================================================
-   ONBOARDING
-========================================================= */
-.onboarding{position:fixed;inset:0;background:#050607;z-index:1000;display:none;align-items:center;justify-content:center;overflow:hidden;padding:20px}
+/* ONBOARDING */
+.onboarding{position:fixed;inset:0;background:#050607;z-index:1000;display:none;align-items:center;justify-content:center;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch}
 .onboarding.show{display:flex}
-.ob-bg{position:absolute;inset:0;background:
-  radial-gradient(circle at 20% 30%, rgba(22,224,127,.12) 0%, transparent 45%),
-  radial-gradient(circle at 80% 70%, rgba(139,92,246,.08) 0%, transparent 45%),
-  linear-gradient(160deg,#0a0d10 0%,#050607 100%);
-  animation:obBgShift 20s ease-in-out infinite}
+.ob-bg{position:fixed;inset:0;background:radial-gradient(circle at 20% 30%, rgba(22,224,127,.12) 0%, transparent 45%),radial-gradient(circle at 80% 70%, rgba(139,92,246,.08) 0%, transparent 45%),linear-gradient(160deg,#0a0d10 0%,#050607 100%);animation:obBgShift 20s ease-in-out infinite;pointer-events:none}
 @keyframes obBgShift{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.1) rotate(2deg)}}
-.ob-content{position:relative;width:100%;max-width:480px;background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:36px 32px;box-shadow:0 40px 100px rgba(0,0,0,.7);overflow:hidden}
+.ob-content{position:relative;width:100%;max-width:480px;background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:36px 32px;box-shadow:0 40px 100px rgba(0,0,0,.7);overflow:hidden;margin:auto}
 .ob-step{display:none;flex-direction:column;gap:20px;animation:obStepIn .5s cubic-bezier(.2,.7,.3,1)}
 .ob-step.active{display:flex}
 @keyframes obStepIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -566,28 +564,22 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .ob-hint{font-size:11px;color:var(--muted);min-height:16px;transition:color .2s}
 .ob-hint.ok{color:var(--green)}
 .ob-hint.err{color:var(--red)}
-.ob-primary{padding:15px;border-radius:11px;border:0;background:var(--green);color:#04170d;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:filter .15s,transform .08s;margin-top:4px}
+.ob-primary{padding:16px;border-radius:11px;border:0;background:var(--green);color:#04170d;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:filter .15s,transform .08s;margin-top:4px}
 .ob-primary:hover{filter:brightness(1.08)}
 .ob-primary:active{transform:scale(.98)}
 .ob-primary:disabled{opacity:.35;cursor:not-allowed}
-.ob-primary:disabled:hover{filter:none}
 .ob-secondary{padding:12px;border-radius:11px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
-.ob-secondary:hover{background:var(--hover)}
-
 .ob-banner-preview{position:relative;height:100px;border-radius:11px;overflow:hidden;background:linear-gradient(135deg,#0a2e1a 0%,#031008 100%);background-size:cover;background-position:center;transition:all .2s}
-.ob-banner-preview .ob-banner-edit{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.15);padding:6px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;backdrop-filter:blur(4px)}
+.ob-banner-preview .ob-banner-edit{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.15);padding:8px 12px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;backdrop-filter:blur(4px)}
 .ob-banner-presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .ob-banner-preset{width:32px;height:32px;border-radius:7px;border:2px solid transparent;cursor:pointer;transition:transform .12s}
 .ob-banner-preset:hover{transform:scale(1.08)}
 .ob-banner-preset.active{border-color:var(--green);box-shadow:0 0 0 2px rgba(22,224,127,.25)}
-
 .ob-avatar-row{display:flex;align-items:center;gap:12px;margin-top:-30px;position:relative;z-index:2;padding-left:12px}
 .ob-avatar-preview{width:64px;height:64px;border-radius:50%;background:#1f242b;border:3px solid var(--panel);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;flex-shrink:0}
 .ob-avatar-preview img{width:100%;height:100%;object-fit:cover}
-.ob-avatar-actions{display:flex;gap:6px;margin-top:24px}
-.ob-avatar-actions button{padding:7px 11px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
-.ob-avatar-actions button:hover{background:var(--hover)}
-
+.ob-avatar-actions{display:flex;gap:6px;margin-top:24px;flex-wrap:wrap}
+.ob-avatar-actions button{padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
 .ob-transition{position:absolute;inset:0;background:#050607;display:none;align-items:center;justify-content:center;flex-direction:column;gap:30px;z-index:10}
 .ob-transition.show{display:flex;animation:obTransIn .35s ease}
 @keyframes obTransIn{from{opacity:0}to{opacity:1}}
@@ -598,7 +590,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .ob-trans-ring{position:absolute;width:120px;height:120px;border-radius:50%;border:3px solid var(--green);opacity:0;animation:obTransRing 1.6s ease-out both}
 @keyframes obTransRing{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(8)}}
 
-/* DAILY BONUS MODAL */
+/* BONUS */
 .bonus-modal{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:32px 28px;width:400px;max-width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.8);position:relative;overflow:hidden}
 .bonus-modal::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg, transparent, rgba(22,224,127,.15), transparent 30%);animation:bonusSpin 4s linear infinite;pointer-events:none}
 @keyframes bonusSpin{to{transform:rotate(360deg)}}
@@ -612,6 +604,263 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .bonus-streak{display:inline-block;font-size:11px;font-weight:800;padding:5px 12px;background:rgba(255,196,0,.12);border:1px solid rgba(255,196,0,.3);border-radius:20px;color:var(--gold);letter-spacing:.05em;margin-bottom:20px}
 .bonus-claim{width:100%;padding:14px;border-radius:11px;border:0;background:linear-gradient(135deg,#ffc400,#ff8c00);color:#04170d;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;letter-spacing:.03em}
 .bonus-claim:hover{filter:brightness(1.1)}
+
+/* ============================================================
+   АДАПТАЦИЯ — ПЛАНШЕТЫ И ТЕЛЕФОНЫ
+============================================================ */
+
+/* Планшеты и телефоны (≤ 900px) */
+@media (max-width: 900px){
+  body{font-size:13px}
+  .app{grid-template-rows:52px 1fr 62px}
+
+  /* TOPBAR — компактнее, кнопки навигации скрыты */
+  .topbar{padding:0 10px;gap:8px}
+  .mainnav{display:none}
+  .brand .slashes{font-size:19px;margin-right:7px}
+  .brand .name{font-size:13.5px}
+  .topright{margin-left:auto;gap:6px}
+  .balance-btn{padding:4px 8px}
+  .balance-btn .val{font-size:12.5px}
+  .profile-btn{padding:3px 8px 3px 3px;gap:7px}
+  .profile-btn .nickname{display:none}
+  .track-trigger{width:32px;height:32px}
+
+  /* SEARCH — становится оверлеем на всю ширину */
+  .search-trigger{width:32px;height:32px}
+  .search-trigger:hover{width:32px;background:transparent;border-color:transparent}
+  .search-trigger.expanded,.search-trigger.has-results{
+    position:fixed;top:8px;left:8px;right:8px;width:auto;
+    z-index:120;height:38px;background:var(--panel);border-color:var(--border);
+    box-shadow:0 10px 30px rgba(0,0,0,.7);
+  }
+  .search-trigger.expanded .search-input,
+  .search-trigger.has-results .search-input{
+    opacity:1;pointer-events:auto;font-size:14px;
+  }
+  .search-dropdown{
+    position:fixed;top:52px;left:8px;right:8px;width:auto;
+    max-height:calc(100dvh - 70px);z-index:120;
+  }
+
+  /* BOTTOM NAV */
+  .mobile-nav{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    background:var(--panel);
+    border-top:1px solid var(--border);
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+    position:relative;
+    z-index:40;
+  }
+  .mn-btn{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;background:transparent;border:0;color:var(--muted);
+    font-size:9.5px;font-weight:700;font-family:inherit;cursor:pointer;
+    padding:8px 2px;transition:color .15s;min-height:52px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mn-btn .mn-ico{width:20px;height:20px;flex-shrink:0;display:block}
+  .mn-btn .mn-ico svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .mn-btn.active{color:var(--green)}
+  .mn-btn:active{background:var(--hover)}
+
+  /* ПЕРЕОПРЕДЕЛЕНИЕ СТРАНИЦ */
+  .home{padding:14px}
+  .home-head{margin-bottom:14px}
+  .home-head h1{font-size:19px}
+  .home-head p{font-size:12px}
+  .home-grid{grid-template-columns:1fr;gap:10px}
+  .home-card{padding:12px 14px}
+  .hc-head{font-size:12.5px;margin-bottom:8px}
+  .hc-sym{font-size:11.5px}
+  .hc-price{font-size:11px}
+  .hc-chg{min-width:56px;font-size:10.5px}
+
+  /* TRADE — 3 таба */
+  .trade-layout{
+    grid-template-columns:1fr !important;
+    grid-template-rows:auto 1fr !important;
+    height:100%;
+  }
+  .mobile-trade-tabs{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    grid-column:1;grid-row:1;
+    gap:6px;padding:8px;
+    border-bottom:1px solid var(--border);
+    background:var(--panel);
+    z-index:3;
+  }
+  .mtt-btn{
+    padding:11px 6px;border-radius:9px;
+    background:var(--panel2);border:1px solid var(--border);
+    color:var(--muted);font-size:11.5px;font-weight:800;
+    font-family:inherit;cursor:pointer;transition:all .15s;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    -webkit-tap-highlight-color:transparent;min-height:48px;justify-content:center;
+  }
+  .mtt-btn .mtt-ico{font-size:15px;line-height:1}
+  .mtt-btn.active{
+    background:rgba(22,224,127,.12);
+    color:var(--green);
+    border-color:rgba(22,224,127,.35);
+  }
+  .tokenlist,.center,.trade-panel{
+    grid-column:1;grid-row:2;
+    display:none;
+  }
+  .trade-layout[data-mtab="list"] .tokenlist{display:flex}
+  .trade-layout[data-mtab="chart"] .center{display:flex}
+  .trade-layout[data-mtab="trade"] .trade-panel{display:flex}
+  .tokenlist{border-right:0}
+  .trade-panel{border-left:0}
+
+  .chart-head{padding:10px 12px;gap:10px}
+  .ch-price{font-size:18px}
+  .ch-sym{font-size:14px}
+  .stats{gap:12px;flex-wrap:wrap}
+  .stat .k{font-size:8.5px}
+  .stat .v{font-size:11px}
+
+  .positions{max-height:180px}
+  .pos-row{grid-template-columns:1.2fr 1fr 1fr 62px;gap:6px;padding:8px 12px;font-size:11.5px}
+  .pos-row .pc:nth-child(3){display:none}
+
+  .tp-body{padding:12px 14px;gap:11px}
+
+  /* FERUMSTAR — 1 колонка */
+  .fs-page{grid-template-columns:1fr;padding:14px;gap:14px}
+  .fs-side{flex-direction:row;gap:12px;overflow-x:auto;overflow-y:hidden;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .fs-side-card{min-width:240px;flex-shrink:0;padding:12px 14px}
+  .fs-main{border-radius:12px}
+  .fs-head{padding:14px 16px}
+  .fs-head h1{font-size:16px}
+  .fs-feed{padding:12px 14px}
+
+  /* EARNINGS */
+  .earnings-page{padding:14px}
+  .earnings-head{flex-direction:column;gap:12px}
+  .earnings-head h1{font-size:19px}
+  .earnings-summary{margin-left:0;gap:16px;flex-wrap:wrap}
+  .trades-grid{grid-template-columns:1fr;gap:10px}
+
+  /* REWARDS */
+  .rewards-page{padding:14px}
+  .rewards-head h1{font-size:19px}
+  .rewards-grid{grid-template-columns:1fr;gap:14px;max-width:100%}
+  .rw-card{aspect-ratio:auto;min-height:auto;padding:22px 20px 20px;border-radius:20px}
+  .rw-prize-big{font-size:44px}
+
+  /* CREATE */
+  .create-page{padding:14px}
+  .create-wrap h1{font-size:19px}
+  .create-card{padding:16px}
+  .logo-row{flex-direction:column;align-items:flex-start;gap:10px}
+
+  /* MODALS */
+  .modal-overlay{padding:12px;align-items:flex-start;padding-top:max(12px, env(safe-area-inset-top))}
+  .modal,.profile-modal,.wallet-modal,.tracking-modal,.bonus-modal{width:100%;max-width:520px;padding:20px}
+  .profile-modal{max-height:calc(100dvh - 24px)}
+  .tracking-modal{max-height:calc(100dvh - 24px)}
+  .profile-banner{height:110px}
+  .profile-avatar{width:68px;height:68px;font-size:32px}
+  .profile-avatar-wrap{margin-top:-34px}
+  .profile-body{padding:0 18px 20px}
+
+  .bonus-modal{padding:26px 22px}
+  .bonus-amount{font-size:38px}
+  .bonus-icon{font-size:44px}
+
+  /* TRACKING */
+  .track-form{grid-template-columns:1fr;gap:6px}
+  .track-form button{padding:12px}
+  .track-item{grid-template-columns:34px 1fr auto;gap:8px;padding:9px 10px}
+  .track-avatar{width:34px;height:34px;font-size:15px}
+  .track-badge{display:none}
+  .track-remove{padding:7px 9px;font-size:10.5px}
+
+  /* VIDEO */
+  .video-modal{
+    grid-template-columns:1fr;
+    grid-template-rows:auto minmax(0,1fr);
+    width:100%;height:calc(100dvh - 24px);
+    max-width:560px;
+  }
+  .video-preview-wrap{padding:12px}
+  #videoCanvas{max-height:38dvh;width:auto;max-width:100%}
+  .video-controls{border-left:0;border-top:1px solid var(--border);padding:16px 16px 24px}
+  .video-modal-overlay{padding:12px;align-items:flex-start;padding-top:max(12px, env(safe-area-inset-top))}
+
+  /* TOP NOTIFS */
+  #topNotifs{top:60px;width:calc(100% - 20px);left:10px;transform:none;right:auto}
+  .top-notif{padding:10px 12px;font-size:11.5px}
+  .tn-logo{width:26px;height:26px;font-size:13px}
+
+  /* TOASTS — над bottom nav */
+  #toasts{right:10px;bottom:74px;left:10px;max-width:none;align-items:stretch}
+  .toast{padding:10px 13px;font-size:12px}
+
+  /* Онбординг */
+  .ob-content{padding:28px 22px;border-radius:18px}
+  .ob-logo{font-size:30px}
+  .ob-logo .name{font-size:26px;margin-left:10px}
+  .ob-step h1{font-size:22px}
+  .ob-step h2{font-size:18px}
+  .ob-step p{font-size:12.5px}
+  .ob-transition .ob-trans-logo{font-size:40px}
+  .ob-transition .ob-trans-logo .name{font-size:32px;margin-left:14px}
+}
+
+/* Телефоны (≤ 600px) */
+@media (max-width: 600px){
+  .brand .name{display:none}
+  .brand .slashes{font-size:22px;margin-right:0}
+
+  .stats{display:none}
+  .ch-sym{font-size:13px}
+  .ch-price{font-size:17px}
+
+  .pos-row{grid-template-columns:1.4fr 1fr 56px;gap:6px;padding:8px 10px}
+  .pos-row .pc:nth-child(3),.pos-row .pc:nth-child(4){display:none}
+
+  .earnings-summary{width:100%;gap:12px}
+  .earn-stat{flex:1;min-width:0}
+  .earn-stat .v{font-size:14px}
+
+  .rw-card{padding:20px 18px}
+  .rw-prize-big{font-size:38px}
+  .rw-time{padding:10px 12px}
+  .rw-time .val{font-size:15px}
+
+  .mobile-trade-tabs{padding:6px}
+  .mtt-btn{padding:9px 4px;font-size:11px;min-height:44px}
+
+  .profile-actions{flex-direction:column}
+  .profile-actions button{width:100%}
+  .profile-actions .logout{flex:1}
+
+  .wallet-actions button{min-width:100%}
+
+  .video-controls h2{font-size:14px}
+  .vc-actions button{padding:12px;font-size:12px}
+}
+
+/* Очень узкие (≤ 380px) */
+@media (max-width: 380px){
+  .mn-btn{font-size:8.5px}
+  .mn-btn .mn-ico{width:18px;height:18px}
+  .mtt-btn{font-size:10px}
+  .mtt-btn .mtt-ico{font-size:14px}
+}
+
+/* Плавные тач-эффекты вместо hover */
+@media (hover: none){
+  .nav-btn:hover,.hc-coin:hover,.trow:hover,.search-result:hover,
+  .track-item:hover,.profile-btn:hover,.balance-btn:hover,
+  .track-trigger:hover,.quick button:hover,.filter-btn:hover{background:var(--panel2)}
+  .track-trigger:hover{background:var(--panel2)}
+}
 </style>
 </head>
 <body>
@@ -681,7 +930,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
 </div>
 
-<!-- DAILY BONUS MODAL -->
+<!-- BONUS -->
 <div class="modal-overlay" id="bonusOverlay">
   <div class="bonus-modal">
     <div class="bonus-content">
@@ -753,7 +1002,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     </section>
 
     <section class="page" id="page-trade">
-      <div class="trade-layout">
+      <div class="trade-layout" id="tradeLayout" data-mtab="chart">
+        <div class="mobile-trade-tabs">
+          <button class="mtt-btn" data-mtab="list"><span class="mtt-ico">📋</span><span>Монеты</span></button>
+          <button class="mtt-btn active" data-mtab="chart"><span class="mtt-ico">📊</span><span>График</span></button>
+          <button class="mtt-btn" data-mtab="trade"><span class="mtt-ico">💱</span><span>Торг</span></button>
+        </div>
+
         <aside class="tokenlist">
           <div class="panel-head"><div class="left"><span>Монеты</span><span class="live-dot"></span></div></div>
           <div class="token-rows" id="tokenRows"></div>
@@ -933,6 +1188,34 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       </div>
     </section>
   </div>
+
+  <!-- BOTTOM NAV (mobile) -->
+  <nav class="mobile-nav" id="mobileNav">
+    <button class="mn-btn active" data-page="home">
+      <span class="mn-ico"><svg viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg></span>
+      <span>Home</span>
+    </button>
+    <button class="mn-btn" data-page="trade">
+      <span class="mn-ico"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 8-8"/><path d="M14 8h6v6"/></svg></span>
+      <span>Trade</span>
+    </button>
+    <button class="mn-btn" data-page="create">
+      <span class="mn-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span>
+      <span>Create</span>
+    </button>
+    <button class="mn-btn" data-page="ferumstar">
+      <span class="mn-ico"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-12 7L4 20l1-5A8 8 0 1 1 21 12z"/></svg></span>
+      <span>Star</span>
+    </button>
+    <button class="mn-btn" data-page="earnings">
+      <span class="mn-ico"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+      <span>Earn</span>
+    </button>
+    <button class="mn-btn" data-page="rewards">
+      <span class="mn-ico"><svg viewBox="0 0 24 24"><path d="M4 6h16v4H4zM5 10v9h14v-9M12 6v13M8 6c-1-2-4-2-4 0 0 1 1 2 4 2M16 6c1-2 4-2 4 0 0 1-1 2-4 2"/></svg></span>
+      <span>Rewards</span>
+    </button>
+  </nav>
 </div>
 
 <!-- RUG -->
@@ -998,7 +1281,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
         <button class="pwr-btn" id="profileWalletOpen">Открыть кошелёк</button>
       </div>
       <div class="profile-actions">
-        <button class="logout" id="profileLogout" style="flex:0.6">Выйти</button>
+        <button class="logout" id="profileLogout">Выйти</button>
         <button class="cancel" id="profileCancel">Отмена</button>
         <button class="confirm" id="profileSave">Сохранить</button>
       </div>
@@ -1103,6 +1386,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 /* ===== УТИЛИТЫ ===== */
 const $  = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
+const isMobile = () => window.innerWidth <= 900;
+
 function fmtPrice(p){
   if (!isFinite(p) || p <= 0) return '0';
   if (p >= 1)      return p.toFixed(4);
@@ -1180,33 +1465,16 @@ function validateUsername(username){
 
 /* ===== STORAGE ===== */
 const STORAGE_KEYS = {
-  registered: 'ferum_registered',
-  username: 'ferum_username',
-  password: 'ferum_password',
-  profile: 'ferum_profile',
-  wallet: 'ferum_wallet',
-  balance: 'ferum_balance',
-  lastClaim: 'ferum_last_claim',
-  streak: 'ferum_streak',
-  holdings: 'ferum_holdings',
-  trades: 'ferum_trades',
-  tracked: 'ferum_tracked',
+  registered: 'ferum_registered', username: 'ferum_username', password: 'ferum_password',
+  profile: 'ferum_profile', wallet: 'ferum_wallet', balance: 'ferum_balance',
+  lastClaim: 'ferum_last_claim', streak: 'ferum_streak',
+  holdings: 'ferum_holdings', trades: 'ferum_trades', tracked: 'ferum_tracked',
 };
-function lsGet(key, fallback = null){
-  try { const v = localStorage.getItem(key); return v === null ? fallback : v; } catch(e){ return fallback; }
-}
-function lsSet(key, val){
-  try { localStorage.setItem(key, val); } catch(e){}
-}
-function lsDel(key){
-  try { localStorage.removeItem(key); } catch(e){}
-}
-function lsGetJSON(key, fallback = null){
-  try { const v = localStorage.getItem(key); return v === null ? fallback : JSON.parse(v); } catch(e){ return fallback; }
-}
-function lsSetJSON(key, val){
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){}
-}
+function lsGet(key, fallback = null){ try { const v = localStorage.getItem(key); return v === null ? fallback : v; } catch(e){ return fallback; } }
+function lsSet(key, val){ try { localStorage.setItem(key, val); } catch(e){} }
+function lsDel(key){ try { localStorage.removeItem(key); } catch(e){} }
+function lsGetJSON(key, fallback = null){ try { const v = localStorage.getItem(key); return v === null ? fallback : JSON.parse(v); } catch(e){ return fallback; } }
+function lsSetJSON(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){} }
 
 /* ===== ПРОФИЛЬ / КОШЕЛЁК / ТРЕКИНГ ===== */
 function generateWalletAddress(){
@@ -1226,22 +1494,14 @@ const BANNER_PRESETS = {
 const AVATAR_EMOJIS = ['👤','😎','🐋','🦈','🐸','🐱','🐶','🦊','🐻','🦅','🦉','🐺','👽','🤖','👑','💎','🔥','⚡','🌟','🎯','🚀','🦍','🐉','🎩'];
 
 const profileState = {
-  username: 'Anon',
-  bio: '',
-  avatarEmoji: '👤',
-  avatarData: null,
-  bannerPreset: 'matrix',
-  bannerData: null,
-  walletPublic: false,
+  username: 'Anon', bio: '', avatarEmoji: '👤', avatarData: null,
+  bannerPreset: 'matrix', bannerData: null, walletPublic: false,
 };
 const walletState = { address: generateWalletAddress() };
 const trackedWallets = [];
 const walletEvents = [];
 
-function saveProfileToStorage(){
-  lsSetJSON(STORAGE_KEYS.profile, profileState);
-  lsSet(STORAGE_KEYS.username, profileState.username);
-}
+function saveProfileToStorage(){ lsSetJSON(STORAGE_KEYS.profile, profileState); lsSet(STORAGE_KEYS.username, profileState.username); }
 function saveWalletToStorage(){ lsSet(STORAGE_KEYS.wallet, walletState.address); }
 function saveBalanceToStorage(){ lsSet(STORAGE_KEYS.balance, String(state.balance)); }
 function saveHoldingsToStorage(){ lsSetJSON(STORAGE_KEYS.holdings, state.holdings); }
@@ -1255,11 +1515,7 @@ function renderTopbarProfile(){
   $('#nicknamePreview').textContent = profileState.username;
 }
 let pendingProfile = null;
-function openProfile(){
-  pendingProfile = { ...profileState };
-  refreshProfileForm();
-  $('#profileOverlay').classList.add('show');
-}
+function openProfile(){ pendingProfile = { ...profileState }; refreshProfileForm(); $('#profileOverlay').classList.add('show'); }
 function closeProfile(){ $('#profileOverlay').classList.remove('show'); }
 function refreshProfileForm(){
   const p = pendingProfile;
@@ -1271,11 +1527,7 @@ function refreshProfileForm(){
     `<div class="banner-preset ${k === p.bannerPreset && !p.bannerData ? 'active' : ''}" data-bp="${k}" style="background:${BANNER_PRESETS[k]}"></div>`
   ).join('');
   presets.querySelectorAll('.banner-preset').forEach(el => {
-    el.addEventListener('click', () => {
-      pendingProfile.bannerPreset = el.dataset.bp;
-      pendingProfile.bannerData = null;
-      refreshProfileForm();
-    });
+    el.addEventListener('click', () => { pendingProfile.bannerPreset = el.dataset.bp; pendingProfile.bannerData = null; refreshProfileForm(); });
   });
   const avatarEl = $('#profileAvatar');
   if (p.avatarData) avatarEl.innerHTML = `<img src="${p.avatarData}">`;
@@ -1382,8 +1634,7 @@ const TRANSITIONS = {
   markdown:     [['capitulation',0.25],['accumulate',0.45],['markdown',0.30]],
   capitulation: [['accumulate',0.55],['markdown',0.20],['distribution',0.25]],
 };
-const PRICE_MIN_MULT = 0.05;
-const PRICE_MAX_MULT = 100;
+const PRICE_MIN_MULT = 0.05, PRICE_MAX_MULT = 100;
 class Token {
   constructor(cfg){
     this.id = cfg.id; this.symbol = cfg.symbol; this.name = cfg.name;
@@ -1445,8 +1696,7 @@ class Token {
     else this.momentum *= 0.75;
     const dev = this.price / this.startPrice - 1;
     const spring = -dev * Math.min(Math.abs(dev), 4) * 0.0003;
-    ret += spring;
-    ret += extra;
+    ret += spring + extra;
     let newPrice = this.price * (1 + ret);
     const minP = this.startPrice * PRICE_MIN_MULT;
     const maxP = this.startPrice * PRICE_MAX_MULT;
@@ -1499,11 +1749,7 @@ class Token {
 }
 const BOT_IMPACT_K = 0.002, PLAYER_IMPACT_K = 0.10, LONELY_RAMP_SEC = 60, LONELY_MAX = 1.2;
 class MarketBots {
-  constructor(token){
-    this.token = token;
-    this.eventCooldown = 0; this.activeEvent = null;
-    this.eventTicksLeft = 0; this.eventFlow = 0;
-  }
+  constructor(token){ this.token = token; this.eventCooldown = 0; this.activeEvent = null; this.eventTicksLeft = 0; this.eventFlow = 0; }
   tick(){
     const t = this.token;
     if (t.rugged || t.rugging) return { impact: 0, event: null, lonelyMult: 1 };
@@ -1557,9 +1803,8 @@ const TOKENS = [
   { id:'musor',   symbol:'MUSOR',   name:'Musor',     price:0.000045, vol:1.70, mcap:340000,  volume:42000,  liq:21000,  holders:240  },
 ].map(cfg => new Token(cfg));
 const TOKEN_EMOJIS = {
-  chad:'🐕', froge:'🐸', mooncat:'🐱',
-  doomer:'💀', macdonalds:'🍔', pedick:'🍆', tribase:'🔷',
-  mcqueen:'🏎️', anonymous:'🎭', grass:'🌿', musor:'🗑️'
+  chad:'🐕', froge:'🐸', mooncat:'🐱', doomer:'💀', macdonalds:'🍔',
+  pedick:'🍆', tribase:'🔷', mcqueen:'🏎️', anonymous:'🎭', grass:'🌿', musor:'🗑️'
 };
 const TOKEN_USERS = {
   chad:'gigachad', froge:'froge_lord', mooncat:'mooncat_ceo',
@@ -1574,9 +1819,7 @@ TOKENS.forEach(t => {
 TOKENS[0].createdAt = Date.now() - 86400000 * 3;
 TOKENS[1].createdAt = Date.now() - 86400000 * 1.5;
 TOKENS[2].createdAt = Date.now() - 86400000 * 7;
-for (let i = 3; i < TOKENS.length; i++){
-  TOKENS[i].createdAt = Date.now() - 86400000 * (0.3 + Math.random() * 20);
-}
+for (let i = 3; i < TOKENS.length; i++) TOKENS[i].createdAt = Date.now() - 86400000 * (0.3 + Math.random() * 20);
 const BOTS = {}; TOKENS.forEach(t => { BOTS[t.id] = new MarketBots(t); });
 const getToken = id => TOKENS.find(t => t.id === id);
 
@@ -1586,7 +1829,7 @@ const MAX_BUY = INITIAL_PRICE * INITIAL_SUPPLY;
 const state = {
   balance: 0, holdings: {}, selected: 'chad', mode: 'buy',
   panelTab: 'trade', page: 'home', lastPlayerTrade: Date.now(),
-  trades: [], earningsFilter: 'all',
+  trades: [], earningsFilter: 'all', mobileTab: 'chart',
 };
 
 /* ===== ЕЖЕДНЕВНЫЙ БОНУС ===== */
@@ -1678,7 +1921,8 @@ function resetWeekCycle(){
   }
   if (winner){
     const t = getToken(winner.id);
-    if (t){ t.mcap0 += 250000; t.mcap += 250000;
+    if (t){
+      t.mcap0 += 250000; t.mcap += 250000;
       cycle.lastWeeklyCoinWinner = { symbol: t.symbol, prize: 250000, votes: cycle.voteCounts[t.id] || 0 };
       pushFeed(t, { author:'Rewards', avatar:'👑', text:`+$250,000 в капитализацию! Победа в недельном розыгрыше.`, kind:'user-info' });
       toast(`👑 ${t.symbol} получает +$250K к капитализации (неделя)!`, 'rug');
@@ -1703,17 +1947,15 @@ function tickRewards(){
   const weekProgress = (now - cycle.weekStart) / WEEK_DURATION;
   if (weekProgress >= 0.8 && !cycle.weekVotingOpen && !cycle.weekTop3.length){
     cycle.weekTop3 = computeWeekTop3(); cycle.weekVotingOpen = true;
-    if (cycle.weekTop3.length){ for (const c of cycle.weekTop3) cycle.voteCounts[c.id] = Math.floor(Math.random() * 80) + 10; }
+    if (cycle.weekTop3.length) for (const c of cycle.weekTop3) cycle.voteCounts[c.id] = Math.floor(Math.random() * 80) + 10;
   }
   if (cycle.weekVotingOpen && Math.random() < 0.3) for (const c of cycle.weekTop3) cycle.voteCounts[c.id] = (cycle.voteCounts[c.id] || 0) + Math.floor(Math.random() * 3);
   if (Math.random() < 0.15){ const u = FAKE_USERS[Math.floor(Math.random() * FAKE_USERS.length)]; u.daily += Math.floor(Math.random() * 220); }
 }
 
 /* ===== СОЦСЕТЬ ===== */
-const BULL_WORDS = ['pump','moon','🚀','bull','buy','gem','ath','lfg','wagmi','rocket','100x','x100','listing','partnership',
-  'памп','луна','вверх','рост','покуп','бычий','полет','иксы','х100','листинг','партнёр','партнер','огонь','огон','🔥','💎','📈','green','up','hold','hodl','диамонд','алмаз'];
-const BEAR_WORDS = ['scam','rug','dump','sell','fud','dead','exit','crash','bear','drop','warning','careful','honeypot',
-  'скам','раг','обвал','слив','продаж','медвеж','дно','падени','предупрежд','обман','развод','крах','🔴','📉','red','down','rip','мертв','все пропало','капец','уходим'];
+const BULL_WORDS = ['pump','moon','🚀','bull','buy','gem','ath','lfg','wagmi','rocket','100x','x100','listing','partnership','памп','луна','вверх','рост','покуп','бычий','полет','иксы','х100','листинг','партнёр','партнер','огонь','огон','🔥','💎','📈','green','up','hold','hodl','диамонд','алмаз'];
+const BEAR_WORDS = ['scam','rug','dump','sell','fud','dead','exit','crash','bear','drop','warning','careful','honeypot','скам','раг','обвал','слив','продаж','медвеж','дно','падени','предупрежд','обман','развод','крах','🔴','📉','red','down','rip','мертв','все пропало','капец','уходим'];
 function detectSentiment(text){
   const t = text.toLowerCase();
   let score = 0;
@@ -1910,7 +2152,10 @@ function buildTokenList(){
     el.className = 'trow' + (t.isOwned ? ' owned' : '');
     el.dataset.id = t.id;
     el.innerHTML = `<div class="tinfo"><div class="tsym">${getLogoHtml(t)}<span>${t.symbol}</span></div><div class="tname">${t.name}</div></div><canvas class="spark" width="100" height="52"></canvas><div class="tprice"><div class="p"></div><div class="chg"></div></div>`;
-    el.addEventListener('click', () => selectToken(t.id));
+    el.addEventListener('click', () => {
+      selectToken(t.id);
+      if (isMobile()) setMobileTab('chart');
+    });
     wrap.appendChild(el);
     t.el = { row: el, price: el.querySelector('.p'), chg: el.querySelector('.chg'), spark: el.querySelector('.spark') };
   });
@@ -1944,7 +2189,7 @@ function drawChart(){
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   const W = rect.width, H = rect.height;
   ctx.clearRect(0, 0, W, H);
-  const padL = 10, padR = 88, padT = 14, padB = 24;
+  const padL = 10, padR = 78, padT = 14, padB = 24;
   const cw = W - padL - padR; const chh = H - padT - padB;
   if (cw <= 0 || chh <= 0) return;
   const vis = t.candles.slice(-70); if (!vis.length) return;
@@ -1958,14 +2203,14 @@ function drawChart(){
   const xOf = i => padL + (i + 0.5) * slot;
   const bodyW = Math.max(2, slot * 0.62);
   ctx.strokeStyle = '#151b21'; ctx.lineWidth = 1;
-  ctx.font = '10.5px ui-monospace, monospace';
+  ctx.font = '10px ui-monospace, monospace';
   ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
   const steps = 5;
   for (let i = 0; i <= steps; i++){
     const y = Math.round(padT + (chh / steps) * i) + 0.5;
     ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + cw, y); ctx.stroke();
     const p = hi - ((hi - lo) / steps) * i;
-    ctx.fillStyle = '#525d68'; ctx.fillText(fmtPrice(p), padL + cw + 10, y);
+    ctx.fillStyle = '#525d68'; ctx.fillText(fmtPrice(p), padL + cw + 8, y);
   }
   ctx.strokeStyle = '#10161b';
   for (let i = 0; i <= 6; i++){ const x = Math.round(padL + (cw / 6) * i) + 0.5; ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + chh); ctx.stroke(); }
@@ -1998,15 +2243,15 @@ function drawChart(){
     const y = yOf(ev.side === 'buy' ? c.l : c.h);
     const offY = ev.side === 'buy' ? 18 : -18;
     ctx.save();
-    ctx.beginPath(); ctx.arc(x, y + offY, 12, 0, Math.PI * 2);
+    ctx.beginPath(); ctx.arc(x, y + offY, 11, 0, Math.PI * 2);
     ctx.fillStyle = ev.side === 'buy' ? 'rgba(22,224,127,.9)' : 'rgba(255,77,94,.9)';
     ctx.fill(); ctx.strokeStyle = '#0e1114'; ctx.lineWidth = 2; ctx.stroke();
-    ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '13px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillStyle = '#fff'; ctx.fillText(w.avatarEmoji, x, y + offY + 1);
     ctx.beginPath();
-    ctx.moveTo(x, ev.side === 'buy' ? y + offY - 12 : y + offY + 12);
-    ctx.lineTo(x - 6, ev.side === 'buy' ? y + offY - 5 : y + offY + 5);
-    ctx.lineTo(x + 6, ev.side === 'buy' ? y + offY - 5 : y + offY + 5);
+    ctx.moveTo(x, ev.side === 'buy' ? y + offY - 11 : y + offY + 11);
+    ctx.lineTo(x - 5, ev.side === 'buy' ? y + offY - 5 : y + offY + 5);
+    ctx.lineTo(x + 5, ev.side === 'buy' ? y + offY - 5 : y + offY + 5);
     ctx.closePath();
     ctx.fillStyle = ev.side === 'buy' ? 'rgba(22,224,127,.9)' : 'rgba(255,77,94,.9)';
     ctx.fill();
@@ -2018,7 +2263,7 @@ function drawChart(){
   ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = lineCol; ctx.globalAlpha = 0.65; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(padL, py); ctx.lineTo(padL + cw, py); ctx.stroke(); ctx.restore();
   const label = fmtPrice(t.price);
-  ctx.font = '10.5px ui-monospace, monospace';
+  ctx.font = '10px ui-monospace, monospace';
   const tw = ctx.measureText(label).width;
   const bx = padL + cw + 6; const bwid = Math.min(tw + 12, padR - 12);
   ctx.fillStyle = lineCol;
@@ -2140,7 +2385,7 @@ function setMode(mode){
 }
 
 /* ===== ОБЪЕДИНЕНИЕ СДЕЛОК ===== */
-const TRADE_MERGE_WINDOW = 2 * 60 * 1000; // 2 минуты
+const TRADE_MERGE_WINDOW = 2 * 60 * 1000;
 
 function execute(){
   const t = getToken(state.selected); if (!t || t.rugged) return;
@@ -2168,7 +2413,6 @@ function execute(){
     t.price = Math.max(t.price * (1 - impact), t.startPrice * PRICE_MIN_MULT);
     saveBalanceToStorage(); saveHoldingsToStorage();
 
-    // Объединяем с последней сделкой по этому токену, если она была < 2 мин назад
     const last = state.trades[0];
     if (last && last.tokenId === t.id && (Date.now() - last.ts) < TRADE_MERGE_WINDOW){
       last.qty += qty;
@@ -2191,8 +2435,7 @@ function execute(){
         amountIn: costBasis, amountOut: proceeds,
         pnl: proceeds - costBasis, pnlPct: costBasis > 0 ? ((proceeds - costBasis) / costBasis) * 100 : 0,
         pnlUsd: proceeds - costBasis, qty,
-        priceIn: h.avg, priceOut: t.price, ts: Date.now(),
-        mergedCount: 1,
+        priceIn: h.avg, priceOut: t.price, ts: Date.now(), mergedCount: 1,
       });
       saveTradesToStorage();
       toast(`Продано ${fmtAmt(qty)} ${t.symbol} за ${fmtGBL(proceeds)} GBL · ${proceeds - costBasis >= 0 ? '+' : ''}${fmtGBL(proceeds - costBasis)} GBL`);
@@ -2208,6 +2451,16 @@ function selectToken(id){
   const fl = $('#feedList'); if (fl) fl.dataset.sig = '';
   setMode(state.mode);
   updateUI();
+}
+
+/* ===== MOBILE TRADE TABS ===== */
+function setMobileTab(tab){
+  state.mobileTab = tab;
+  const layout = document.getElementById('tradeLayout');
+  if (!layout) return;
+  layout.dataset.mtab = tab;
+  document.querySelectorAll('.mtt-btn').forEach(b => b.classList.toggle('active', b.dataset.mtab === tab));
+  if (tab === 'chart') setTimeout(() => drawChart(), 10);
 }
 
 /* ===== BOT EVENTS ===== */
@@ -2308,6 +2561,7 @@ function executeRugPull(t){
 function switchPage(page){
   state.page = page;
   $$('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  $$('.mn-btn').forEach(b => b.classList.toggle('active', b.dataset.page === page));
   $$('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + page));
   if (page === 'home') renderHome();
   if (page === 'ferumstar') renderFerumstar();
@@ -2342,105 +2596,53 @@ function loop(ts){
     const sec = Math.max(0, Math.ceil((cur.rugging.endsAt - Date.now()) / 1000));
     $('#rugCountdown').textContent = sec;
   }
-  if (state.page === 'trade') drawChart();
+  if (state.page === 'trade' && (!isMobile() || state.mobileTab === 'chart')) drawChart();
   requestAnimationFrame(loop);
 }
 
 /* =========================================================
-   ===== ONBOARDING =====
+   ONBOARDING
 ========================================================= */
-const obState = {
-  step: 0,
-  username: '',
-  password: '',
-  avatarEmoji: '👤',
-  avatarData: null,
-  bannerPreset: 'matrix',
-  bannerData: null,
-  bio: '',
-};
+const obState = { step: 0, username: '', password: '', avatarEmoji: '👤', avatarData: null, bannerPreset: 'matrix', bannerData: null, bio: '' };
 
 function setObStep(n){
   obState.step = n;
   $$('.ob-step').forEach(el => el.classList.toggle('active', parseInt(el.dataset.step) === n));
-  $$('.ob-dot').forEach((el, i) => {
-    el.classList.toggle('active', i === n);
-    el.classList.toggle('done', i < n);
-  });
+  $$('.ob-dot').forEach((el, i) => { el.classList.toggle('active', i === n); el.classList.toggle('done', i < n); });
 }
 $('#obStart').addEventListener('click', () => setObStep(1));
 
-// Step 1: username
 function validateObUsername(){
   const v = obState.username;
-  const wrap = $('#obUsernameWrap');
-  const hint = $('#obUsernameHint');
-  const btn = $('#obNextUsername');
-  if (!v){
-    wrap.className = 'ob-input-wrap';
-    hint.className = 'ob-hint';
-    hint.textContent = '';
-    btn.disabled = true;
-    return;
-  }
+  const wrap = $('#obUsernameWrap'); const hint = $('#obUsernameHint'); const btn = $('#obNextUsername');
+  if (!v){ wrap.className = 'ob-input-wrap'; hint.className = 'ob-hint'; hint.textContent = ''; btn.disabled = true; return; }
   const res = validateUsername(v);
-  if (res.ok){
-    wrap.className = 'ob-input-wrap good';
-    hint.className = 'ob-hint ok';
-    hint.textContent = '✓ @' + v + ' свободен';
-    btn.disabled = false;
-  } else {
-    wrap.className = 'ob-input-wrap bad';
-    hint.className = 'ob-hint err';
-    hint.textContent = res.err;
-    btn.disabled = true;
-  }
+  if (res.ok){ wrap.className = 'ob-input-wrap good'; hint.className = 'ob-hint ok'; hint.textContent = '✓ @' + v + ' свободен'; btn.disabled = false; }
+  else { wrap.className = 'ob-input-wrap bad'; hint.className = 'ob-hint err'; hint.textContent = res.err; btn.disabled = true; }
 }
-$('#obUsername').addEventListener('input', e => {
-  obState.username = e.target.value.trim();
-  validateObUsername();
-});
-$('#obNextUsername').addEventListener('click', () => {
-  if (!validateUsername(obState.username).ok) return;
-  setObStep(2);
-});
+$('#obUsername').addEventListener('input', e => { obState.username = e.target.value.trim(); validateObUsername(); });
+$('#obNextUsername').addEventListener('click', () => { if (!validateUsername(obState.username).ok) return; setObStep(2); });
 
-// Step 2: password
 function validateObPassword(){
-  const p1 = $('#obPassword').value;
-  const p2 = $('#obPassword2').value;
-  const hint = $('#obPasswordHint');
-  const btn = $('#obNextPassword');
+  const p1 = $('#obPassword').value; const p2 = $('#obPassword2').value;
+  const hint = $('#obPasswordHint'); const btn = $('#obNextPassword');
   if (!p1){ hint.className = 'ob-hint'; hint.textContent = ''; btn.disabled = true; return; }
   if (p1.length < 6){ hint.className = 'ob-hint err'; hint.textContent = 'Минимум 6 символов'; btn.disabled = true; return; }
   if (!p2){ hint.className = 'ob-hint'; hint.textContent = ''; btn.disabled = true; return; }
   if (p1 !== p2){ hint.className = 'ob-hint err'; hint.textContent = 'Пароли не совпадают'; btn.disabled = true; return; }
-  hint.className = 'ob-hint ok';
-  hint.textContent = '✓ Всё верно';
-  btn.disabled = false;
+  hint.className = 'ob-hint ok'; hint.textContent = '✓ Всё верно'; btn.disabled = false;
 }
 $('#obPassword').addEventListener('input', validateObPassword);
 $('#obPassword2').addEventListener('input', validateObPassword);
-$('#obNextPassword').addEventListener('click', () => {
-  obState.password = $('#obPassword').value;
-  setObStep(3);
-  buildObBannerPresets();
-  refreshObProfilePreview();
-});
+$('#obNextPassword').addEventListener('click', () => { obState.password = $('#obPassword').value; setObStep(3); buildObBannerPresets(); refreshObProfilePreview(); });
 
-// Step 3: profile
 function buildObBannerPresets(){
   const wrap = $('#obBannerPresets');
   wrap.innerHTML = Object.keys(BANNER_PRESETS).map(k =>
     `<div class="ob-banner-preset ${k === obState.bannerPreset && !obState.bannerData ? 'active' : ''}" data-bp="${k}" style="background:${BANNER_PRESETS[k]}"></div>`
   ).join('');
   wrap.querySelectorAll('.ob-banner-preset').forEach(el => {
-    el.addEventListener('click', () => {
-      obState.bannerPreset = el.dataset.bp;
-      obState.bannerData = null;
-      buildObBannerPresets();
-      refreshObProfilePreview();
-    });
+    el.addEventListener('click', () => { obState.bannerPreset = el.dataset.bp; obState.bannerData = null; buildObBannerPresets(); refreshObProfilePreview(); });
   });
 }
 function refreshObProfilePreview(){
@@ -2460,8 +2662,7 @@ $('#obBannerFile').addEventListener('change', e => {
 });
 $('#obAvatarRandom').addEventListener('click', () => {
   obState.avatarEmoji = AVATAR_EMOJIS[Math.floor(Math.random() * AVATAR_EMOJIS.length)];
-  obState.avatarData = null;
-  refreshObProfilePreview();
+  obState.avatarData = null; refreshObProfilePreview();
 });
 $('#obAvatarUpload').addEventListener('click', () => $('#obAvatarFile').click());
 $('#obAvatarFile').addEventListener('change', e => {
@@ -2475,9 +2676,7 @@ $('#obBio').addEventListener('input', e => { obState.bio = e.target.value; });
 $('#obFinish').addEventListener('click', () => {
   const trans = $('#obTransition');
   trans.classList.add('show');
-
   setTimeout(() => {
-    // Сохраняем всё
     profileState.username = obState.username;
     profileState.bio = obState.bio || 'Новичок в ferum.';
     profileState.avatarEmoji = obState.avatarEmoji;
@@ -2485,18 +2684,14 @@ $('#obFinish').addEventListener('click', () => {
     profileState.bannerPreset = obState.bannerPreset;
     profileState.bannerData = obState.bannerData;
     profileState.walletPublic = false;
-
     lsSet(STORAGE_KEYS.registered, '1');
     lsSet(STORAGE_KEYS.password, obState.password);
     saveProfileToStorage();
     saveWalletToStorage();
-
     state.balance = 250;
     saveBalanceToStorage();
-
     renderTopbarProfile();
     updateUI();
-
     setTimeout(() => {
       $('#onboarding').classList.remove('show');
       setTimeout(() => showDailyBonus(), 400);
@@ -2504,7 +2699,6 @@ $('#obFinish').addEventListener('click', () => {
   }, 1400);
 });
 
-/* Автозагрузка если уже зарегистрирован */
 function tryAutoLogin(){
   if (lsGet(STORAGE_KEYS.registered) === '1'){
     const savedProfile = lsGetJSON(STORAGE_KEYS.profile);
@@ -2529,6 +2723,9 @@ function tryAutoLogin(){
 
 /* ===== UI EVENTS ===== */
 $$('.nav-btn').forEach(btn => btn.addEventListener('click', () => switchPage(btn.dataset.page)));
+$$('.mn-btn').forEach(btn => btn.addEventListener('click', () => switchPage(btn.dataset.page)));
+$$('.mtt-btn').forEach(btn => btn.addEventListener('click', () => setMobileTab(btn.dataset.mtab)));
+
 $$('.tp-tab[data-panel]').forEach(btn => btn.addEventListener('click', () => {
   state.panelTab = btn.dataset.panel;
   $$('.tp-tab[data-panel]').forEach(b => b.classList.toggle('active', b === btn));
@@ -2553,6 +2750,7 @@ $('#posList').addEventListener('click', e => {
   selectToken(id); setMode('sell');
   const h = state.holdings[id]; if (h) $('#amountInput').value = h.amount.toFixed(2);
   updateEstimate();
+  if (isMobile()) setMobileTab('trade');
 });
 $('#cName').addEventListener('input', updateCreateSummary);
 $('#cSymbol').addEventListener('input', updateCreateSummary);
@@ -2594,79 +2792,46 @@ searchInput.addEventListener('blur', () => {
     if (!searchInput.value) searchTrigger.classList.remove('expanded','has-results');
   }, 180);
 });
-searchInput.addEventListener('focus', () => {
-  if (searchInput.value) renderSearchResults(searchInput.value);
-});
+searchInput.addEventListener('focus', () => { if (searchInput.value) renderSearchResults(searchInput.value); });
 searchInput.addEventListener('input', e => {
   const q = e.target.value.trim();
-  if (!q){
-    searchDropdown.classList.remove('show');
-    searchTrigger.classList.remove('has-results');
-    return;
-  }
+  if (!q){ searchDropdown.classList.remove('show'); searchTrigger.classList.remove('has-results'); return; }
   renderSearchResults(q);
 });
 function renderSearchResults(q){
   const ql = q.toLowerCase();
   const coinMatches = TOKENS.filter(t => t.symbol.toLowerCase().includes(ql) || t.name.toLowerCase().includes(ql)).slice(0, 6);
-  const userMatches = [];
-  const seen = new Set();
-  // Мы сами
+  const userMatches = []; const seen = new Set();
   if (profileState.username && profileState.username.toLowerCase().includes(ql)){
-    userMatches.push({
-      username: profileState.username,
-      avatarEmoji: profileState.avatarEmoji,
-      avatarData: profileState.avatarData,
-      tokenId: null,
-      isMe: true,
-    });
+    userMatches.push({ username: profileState.username, avatarEmoji: profileState.avatarEmoji, avatarData: profileState.avatarData, tokenId: null, isMe: true });
     seen.add(profileState.username.toLowerCase());
   }
   for (const t of TOKENS){
     if (!t.ownerUsername || t.rugged) continue;
     const u = t.ownerUsername.toLowerCase();
     if (seen.has(u)) continue;
-    if (u.includes(ql)){
-      userMatches.push({
-        username: t.ownerUsername,
-        avatarEmoji: t.logoEmoji,
-        avatarData: t.logoData,
-        tokenId: t.id,
-      });
-      seen.add(u);
-    }
+    if (u.includes(ql)){ userMatches.push({ username: t.ownerUsername, avatarEmoji: t.logoEmoji, avatarData: t.logoData, tokenId: t.id }); seen.add(u); }
     if (userMatches.length >= 8) break;
   }
-
   if (!coinMatches.length && !userMatches.length){
     searchDropdown.innerHTML = '<div class="search-empty">Ничего не найдено</div>';
-    searchDropdown.classList.add('show');
-    searchTrigger.classList.add('has-results');
+    searchDropdown.classList.add('show'); searchTrigger.classList.add('has-results');
     return;
   }
-
   let html = '';
   if (userMatches.length){
     html += '<div class="search-section-label">Пользователи</div>';
     html += userMatches.map(u => {
       const av = u.avatarData ? `<img src="${u.avatarData}">` : (u.avatarEmoji || '👤');
       const sub = u.isMe ? 'Это вы' : (u.tokenId ? 'Владелец монеты' : '');
-      return `<div class="search-result" data-user="${u.username}" data-token="${u.tokenId || ''}">
-        <div class="sr-avatar">${av}</div>
-        <div class="sr-info"><div class="sr-name">@${u.username}</div><div class="sr-sub">${sub}</div></div>
-        <div class="sr-badge user">USER</div>
-      </div>`;
+      return `<div class="search-result" data-user="${u.username}" data-token="${u.tokenId || ''}"><div class="sr-avatar">${av}</div><div class="sr-info"><div class="sr-name">@${u.username}</div><div class="sr-sub">${sub}</div></div><div class="sr-badge user">USER</div></div>`;
     }).join('');
   }
   if (coinMatches.length){
     html += '<div class="search-section-label">Монеты</div>';
     html += coinMatches.map(t => {
       const av = t.logoData ? `<img src="${t.logoData}">` : (t.logoEmoji || '🪙');
-      return `<div class="search-result" data-coin-id="${t.id}">
-        <div class="sr-avatar">${av}</div>
-        <div class="sr-info"><div class="sr-name">${t.symbol}</div><div class="sr-sub">${t.name} · ${fmtPrice(t.price)} GBL</div></div>
-        <div class="sr-badge coin">COIN</div>
-      </div>`;
+      return `<div class="search-result" data-coin-id="${t.id}"><div class="sr-avatar">${av}</div><div class="sr-info"><div class="sr-name">${t.symbol}</div><div class="sr-sub">${t.name} · ${fmtPrice(t.price)} GBL</div></div><div class="sr-badge coin">COIN</div></div>`;
     }).join('');
   }
   searchDropdown.innerHTML = html;
@@ -2676,31 +2841,19 @@ function renderSearchResults(q){
   searchDropdown.querySelectorAll('[data-coin-id]').forEach(el => {
     el.addEventListener('mousedown', ev => {
       ev.preventDefault();
-      selectToken(el.dataset.coinId);
-      switchPage('trade');
-      searchInput.value = '';
-      searchInput.blur();
-      searchDropdown.classList.remove('show');
-      searchTrigger.classList.remove('expanded','has-results');
+      selectToken(el.dataset.coinId); switchPage('trade');
+      searchInput.value = ''; searchInput.blur();
+      searchDropdown.classList.remove('show'); searchTrigger.classList.remove('expanded','has-results');
     });
   });
   searchDropdown.querySelectorAll('[data-user]').forEach(el => {
     el.addEventListener('mousedown', ev => {
       ev.preventDefault();
-      const tokenId = el.dataset.token;
-      const username = el.dataset.user;
-      if (tokenId){
-        selectToken(tokenId);
-        switchPage('trade');
-        toast(`👤 @${username}`);
-      } else {
-        // Это мы сами — открываем профиль
-        openProfile();
-      }
-      searchInput.value = '';
-      searchInput.blur();
-      searchDropdown.classList.remove('show');
-      searchTrigger.classList.remove('expanded','has-results');
+      const tokenId = el.dataset.token; const username = el.dataset.user;
+      if (tokenId){ selectToken(tokenId); switchPage('trade'); toast(`👤 @${username}`); }
+      else openProfile();
+      searchInput.value = ''; searchInput.blur();
+      searchDropdown.classList.remove('show'); searchTrigger.classList.remove('expanded','has-results');
     });
   });
 }
@@ -2718,14 +2871,8 @@ $('#profileLogout').addEventListener('click', () => {
   Object.values(STORAGE_KEYS).forEach(k => lsDel(k));
   location.reload();
 });
-$('#profileBio').addEventListener('input', e => {
-  pendingProfile.bio = e.target.value;
-  $('#bioCount').textContent = e.target.value.length + '/140';
-});
-$('#walletPublicToggle').addEventListener('change', e => {
-  pendingProfile.walletPublic = e.target.checked;
-  $('#profileWalletRow').style.display = e.target.checked ? 'flex' : 'none';
-});
+$('#profileBio').addEventListener('input', e => { pendingProfile.bio = e.target.value; $('#bioCount').textContent = e.target.value.length + '/140'; });
+$('#walletPublicToggle').addEventListener('change', e => { pendingProfile.walletPublic = e.target.checked; $('#profileWalletRow').style.display = e.target.checked ? 'flex' : 'none'; });
 $('#bannerEditBtn').addEventListener('click', () => $('#bannerFile').click());
 $('#bannerFile').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
@@ -2737,9 +2884,7 @@ $('#avatarEmojiBtn').addEventListener('click', () => {
   const cur = pendingProfile.avatarEmoji;
   const idx = AVATAR_EMOJIS.indexOf(cur);
   const next = AVATAR_EMOJIS[(idx + 1) % AVATAR_EMOJIS.length];
-  pendingProfile.avatarEmoji = next;
-  pendingProfile.avatarData = null;
-  refreshProfileForm();
+  pendingProfile.avatarEmoji = next; pendingProfile.avatarData = null; refreshProfileForm();
 });
 $('#avatarUploadBtn').addEventListener('click', () => $('#avatarFile').click());
 $('#avatarFile').addEventListener('change', e => {
@@ -2763,18 +2908,14 @@ $('#trackAddBtn').addEventListener('click', addTrackedWallet);
 $('#trackAddr').addEventListener('keydown', e => { if (e.key === 'Enter') addTrackedWallet(); });
 $('#trackName').addEventListener('keydown', e => { if (e.key === 'Enter') addTrackedWallet(); });
 
-/* ===== DAILY BONUS ===== */
+/* ===== BONUS ===== */
 $('#bonusClaim').addEventListener('click', claimDailyBonus);
 
-/* ===== VIDEO MODAL ===== */
+/* ===== VIDEO ===== */
 const vCanvas = document.getElementById('videoCanvas');
 const vCtx = vCanvas.getContext('2d');
 const VIDEO_W = 960, VIDEO_H = 720;
-const videoState = {
-  trade: null, theme: 'profit', bgType: 'preset', bgPreset: 'matrix',
-  bgImage: null, audioBuffer: null, audioCtx: null,
-  audioStart: 0, audioEnd: 0, audioDuration: 0, duration: 4.0,
-};
+const videoState = { trade: null, theme: 'profit', bgType: 'preset', bgPreset: 'matrix', bgImage: null, audioBuffer: null, audioCtx: null, audioStart: 0, audioEnd: 0, audioDuration: 0, duration: 4.0 };
 const BG_PRESETS = {
   matrix:   { colors:['#0a2e1a','#031008'] },
   purple:   { colors:['#2a1254','#0a0419'] },
@@ -2866,14 +3007,11 @@ function drawVideoFrame(t){
   }
   const ease = x => x < 1 ? 1 - Math.pow(1 - x, 3) : 1;
   const appear = (start, dur) => ease(Math.max(0, Math.min(1, (t - start) / dur)));
-
   {
     const a = appear(0.0, 0.5);
-    vCtx.save(); vCtx.globalAlpha = a;
-    vCtx.translate(0, (1 - a) * -12);
+    vCtx.save(); vCtx.globalAlpha = a; vCtx.translate(0, (1 - a) * -12);
     vCtx.textAlign = 'left'; vCtx.textBaseline = 'middle';
-    const logoY = 78;
-    const supportsLS = ('letterSpacing' in vCtx);
+    const logoY = 78; const supportsLS = ('letterSpacing' in vCtx);
     vCtx.font = '900 56px ui-monospace, monospace';
     if (supportsLS) vCtx.letterSpacing = '-20px';
     const slashesW = vCtx.measureText('//').width;
@@ -2897,8 +3035,7 @@ function drawVideoFrame(t){
     vCtx.fillText('.', startX + slashesW + gapSlashesToFerum + ferumOnlyW, logoY + 4);
     vCtx.restore();
   }
-  const baseX = 88;
-  let curY = 268;
+  const baseX = 88; let curY = 268;
   {
     const a = appear(0.35, 0.5);
     vCtx.save(); vCtx.globalAlpha = a;
@@ -2913,46 +3050,37 @@ function drawVideoFrame(t){
     vCtx.strokeStyle = accent; vCtx.lineWidth = 4;
     ctxRoundRect(vCtx, bx, by, bw, boxH, 16); vCtx.stroke();
     vCtx.shadowBlur = 0;
-    vCtx.fillStyle = '#ffffff';
-    vCtx.textAlign = 'left'; vCtx.textBaseline = 'middle';
+    vCtx.fillStyle = '#ffffff'; vCtx.textAlign = 'left'; vCtx.textBaseline = 'middle';
     vCtx.fillText(text, bx + padX, by + boxH / 2 + 3);
     curY = by + boxH + 30;
     vCtx.restore();
   }
   {
     const a = appear(0.75, 0.45);
-    vCtx.save(); vCtx.globalAlpha = a;
-    vCtx.translate(0, (1 - a) * 10);
-    vCtx.font = '700 30px Inter, sans-serif';
-    vCtx.fillStyle = '#d7dee6';
+    vCtx.save(); vCtx.globalAlpha = a; vCtx.translate(0, (1 - a) * 10);
+    vCtx.font = '700 30px Inter, sans-serif'; vCtx.fillStyle = '#d7dee6';
     vCtx.textAlign = 'left'; vCtx.textBaseline = 'middle';
     vCtx.fillText(trade.symbol, baseX, curY);
-    curY += 50;
-    vCtx.restore();
+    curY += 50; vCtx.restore();
   }
   {
     const a = appear(1.0, 0.45);
-    vCtx.save(); vCtx.globalAlpha = a;
-    vCtx.translate(0, (1 - a) * 10);
+    vCtx.save(); vCtx.globalAlpha = a; vCtx.translate(0, (1 - a) * 10);
     const pct = (trade.pnlPct >= 0 ? '+' : '') + trade.pnlPct.toFixed(2) + '%';
     const usd = (trade.pnlUsd >= 0 ? '+' : '') + '$' + Math.abs(trade.pnlUsd).toFixed(2);
-    vCtx.font = '800 34px Inter, sans-serif';
-    vCtx.fillStyle = accent2;
+    vCtx.font = '800 34px Inter, sans-serif'; vCtx.fillStyle = accent2;
     vCtx.textAlign = 'left'; vCtx.textBaseline = 'middle';
     vCtx.shadowColor = accent; vCtx.shadowBlur = 14;
     vCtx.fillText(pct, baseX, curY);
     const pctW = vCtx.measureText(pct).width;
     vCtx.shadowBlur = 0;
-    vCtx.font = '800 28px ui-monospace, monospace';
-    vCtx.fillStyle = '#a8b1bd';
+    vCtx.font = '800 28px ui-monospace, monospace'; vCtx.fillStyle = '#a8b1bd';
     vCtx.fillText('  ' + usd, baseX + pctW, curY + 2);
-    curY += 52;
-    vCtx.restore();
+    curY += 52; vCtx.restore();
   }
   {
     const a = appear(1.2, 0.45);
-    vCtx.save(); vCtx.globalAlpha = a;
-    vCtx.translate(0, (1 - a) * 10);
+    vCtx.save(); vCtx.globalAlpha = a; vCtx.translate(0, (1 - a) * 10);
     vCtx.font = '600 22px ui-monospace, monospace';
     vCtx.textAlign = 'left'; vCtx.textBaseline = 'middle';
     const inStr  = fmtGBL(trade.amountIn) + ' GBL';
@@ -3024,15 +3152,13 @@ $('#audioStart').addEventListener('input', e => {
   let v = parseFloat(e.target.value);
   if (v > videoState.audioEnd - 0.5) v = Math.max(0, videoState.audioEnd - 0.5);
   videoState.audioStart = v; e.target.value = v;
-  $('#audioStartVal').textContent = v.toFixed(2) + 's';
-  schedulePreview();
+  $('#audioStartVal').textContent = v.toFixed(2) + 's'; schedulePreview();
 });
 $('#audioEnd').addEventListener('input', e => {
   let v = parseFloat(e.target.value);
   if (v < videoState.audioStart + 0.5) v = Math.min(videoState.audioDuration, videoState.audioStart + 0.5);
   videoState.audioEnd = v; e.target.value = v;
-  $('#audioEndVal').textContent = v.toFixed(2) + 's';
-  schedulePreview();
+  $('#audioEndVal').textContent = v.toFixed(2) + 's'; schedulePreview();
 });
 $('#previewBtn').addEventListener('click', () => playPreview());
 $('#recBtn').addEventListener('click', async () => {
@@ -3112,7 +3238,6 @@ renderTopbarProfile();
 cycle.playerStartValue = getNetWorth();
 for (const u of FAKE_USERS) u.daily = Math.floor(Math.random() * 2800);
 
-// Запуск: либо онбординг, либо автологин
 const autoLogged = tryAutoLogin();
 if (!autoLogged){
   $('#onboarding').classList.add('show');
@@ -3120,6 +3245,18 @@ if (!autoLogged){
   buildObBannerPresets();
   refreshObProfilePreview();
 }
+
+/* Если мобильный — стартуем на табе График */
+if (isMobile()) setMobileTab('chart');
+
+/* Перерисовка при повороте экрана / изменении размера */
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (state.page === 'trade') drawChart();
+  }, 150);
+});
 
 requestAnimationFrame(loop);
 </script>
